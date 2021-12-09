@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -23,9 +24,9 @@ func main() {
 	decepsilon := convertToBase10(epsilon)
 	fmt.Println("decepsilon: ", decepsilon)
 
-	// Calculate and output power consumption
+	// Calculate and trim trailing zeros for power consumption output
 	powerconsumption := decgamma * decepsilon
-	fmt.Printf("What is the power consumption of the submarine? %f\n", powerconsumption)
+	fmt.Println("What is the power consumption of the submarine?", strconv.FormatFloat(powerconsumption, 'f', -1, 64))
 }
 
 // Opening the inputfile and transposing it to a slice
