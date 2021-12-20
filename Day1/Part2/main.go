@@ -11,22 +11,7 @@ import (
 )
 
 func main() {
-	// Opening the inputfile and transposing it to a slice
-	inputfile, err := os.Open("input.txt")
-	if err != nil {
-		fmt.Println("Error: ", err)
-		os.Exit(1)
-	}
-
-	scanner := bufio.NewScanner(inputfile)
-	scanner.Split(bufio.ScanLines)
-	var measurements []string
-
-	for scanner.Scan() {
-		measurements = append(measurements, scanner.Text())
-	}
-
-	inputfile.Close()
+	measurements := readInput("input.txt")
 
 	// Main logic loop
 	inputlen := len(measurements) - 1
@@ -67,6 +52,30 @@ func main() {
 		lastwindow = window
 	}
 	fmt.Println("How many sums are larger than the previous sum?", counter)
+}
+
+func errorCheck(err error) {
+	if err != nil {
+		fmt.Println("Error: ", err)
+		os.Exit(1)
+	}
+}
+
+// Opening the inputfile and transposing it to a slice
+func readInput(inputfile string) []string {
+	file, err := os.Open(inputfile)
+	errorCheck(err)
+
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+	var output []string
+
+	for scanner.Scan() {
+		output = append(output, scanner.Text())
+	}
+
+	file.Close()
+	return output
 }
 
 func compare(window int, lastwindow int) (increment int) {
