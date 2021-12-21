@@ -76,11 +76,11 @@ func readInput(inputfile string) []string {
 }
 
 // Same func used to compare neighboring measurements as well as windows
-func isLarger(first int, second int) (incerement int) {
+func isLarger(first int, second int) (increment int) {
 	if first > second {
-		incerement = 1
+		increment = 1
 	} else {
-		incerement = 0
+		increment = 0
 	}
-	return incerement
+	return increment
 }
