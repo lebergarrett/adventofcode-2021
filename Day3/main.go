@@ -39,8 +39,8 @@ func readInput(inputfile string) []string {
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
-	var output []string
 
+	var output []string
 	for scanner.Scan() {
 		output = append(output, scanner.Text())
 	}
@@ -69,6 +69,7 @@ func zerosAndOnes(slice []string) (numzeros []int, numones []int) {
 	return numzeros, numones
 }
 
+// Calculate Gamma and Epsilon, which are opposing values
 func calcGammaAndEpsilon(numzeros []int, numones []int) (gamma []int, epsilon []int) {
 	gamma = make([]int, len(numzeros))
 	epsilon = make([]int, len(numzeros))
