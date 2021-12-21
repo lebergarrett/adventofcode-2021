@@ -10,10 +10,10 @@ import (
 func main() {
 	measurements := readInput("input.txt")
 
-	// Vars that need to persist outside of loop
+	// vars that need to persist outside of loop
 	inputlen := len(measurements) - 1
-	var pt1counter int
-	var pt2counter int
+	var pt1counter int // counter for part 1
+	var pt2counter int // counter for part 2
 	var lastwindow int
 
 	for i := range measurements {
@@ -41,6 +41,8 @@ func main() {
 
 			window = curr + next + nextnext
 			pt1counter += isLarger(next, curr)
+
+			// if i is zero there is no lastwindow
 			if i != 0 {
 				pt2counter += isLarger(window, lastwindow)
 			}
@@ -51,22 +53,18 @@ func main() {
 	fmt.Println("How many sums are larger than the previous sum?", pt2counter)
 }
 
-func errorCheck(err error) {
+// opening the inputfile and transposing it to a slice
+func readInput(inputfile string) []string {
+	file, err := os.Open(inputfile)
 	if err != nil {
 		fmt.Println("Error: ", err)
 		os.Exit(1)
 	}
-}
-
-// Opening the inputfile and transposing it to a slice
-func readInput(inputfile string) []string {
-	file, err := os.Open(inputfile)
-	errorCheck(err)
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
-	var output []string
 
+	var output []string
 	for scanner.Scan() {
 		output = append(output, scanner.Text())
 	}
@@ -75,12 +73,10 @@ func readInput(inputfile string) []string {
 	return output
 }
 
-// Same func used to compare neighboring measurements as well as windows
-func isLarger(first int, second int) (increment int) {
+// determine if first int is larger than second
+func isLarger(first int, second int) int {
 	if first > second {
-		increment = 1
-	} else {
-		increment = 0
+		return 1
 	}
-	return increment
+	return 0
 }
