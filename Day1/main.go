@@ -12,13 +12,13 @@ func main() {
 	intMeasurements, err := MakeInts(strMeasurements)
 	ErrorCheck(err)
 
-	Part1Answer, err := CalcPart1(intMeasurements)
+	part1Answer, err := CalcPart1(intMeasurements)
 	ErrorCheck(err)
-	fmt.Println("How many measurements are larger than the previous measurement?", Part1Answer)
+	fmt.Println("How many measurements are larger than the previous measurement?", part1Answer)
 
-	Part2Answer, err := CalcPart2(intMeasurements)
+	part2Answer, err := CalcPart2(intMeasurements)
 	ErrorCheck(err)
-	fmt.Println("How many sums are larger than the previous sum?", Part2Answer)
+	fmt.Println("How many sums are larger than the previous sum?", part2Answer)
 }
 
 func CalcPart1(ints []int) (count int, err error) {
