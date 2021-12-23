@@ -47,15 +47,15 @@ func TestZerosAndOnes(t *testing.T) {
 		{[]string{"1", "0", "1", "0"}, []int{2}, []int{2}, ""},
 		{[]string{"1", "0", "1", "0", "1", "1", "1", "1"}, []int{2}, []int{6}, ""},
 		{[]string{"10", "00", "10", "01", "11", "11", "01", "10"}, []int{3, 4}, []int{5, 4}, ""},
-		{[]string{"10", "001", "10", "01"}, nil, nil, "Error: slice with varying length digits passed to zerosAndOnes"},
-		{[]string{}, nil, nil, "Error: empty slice passed to zerosAndOnes"},
-		{[]string{"string"}, nil, nil, "Error: digit that is not a zero or one pass to zerosAndOnes"},
-		{[]string{"0", "string"}, nil, nil, "Error: slice with varying length digits passed to zerosAndOnes"},
-		{[]string{"0", "s"}, nil, nil, "Error: digit that is not a zero or one pass to zerosAndOnes"},
+		{[]string{"10", "001", "10", "01"}, nil, nil, "Error: slice with varying length digits passed to ZerosAndOnes"},
+		{[]string{}, nil, nil, "Error: empty slice passed to ZerosAndOnes"},
+		{[]string{"string"}, nil, nil, "Error: digit that is not a zero or one pass to ZerosAndOnes"},
+		{[]string{"0", "string"}, nil, nil, "Error: slice with varying length digits passed to ZerosAndOnes"},
+		{[]string{"0", "s"}, nil, nil, "Error: digit that is not a zero or one pass to ZerosAndOnes"},
 	}
 
 	for _, table := range tables {
-		zeros, ones, err := zerosAndOnes(table.testCase)
+		zeros, ones, err := ZerosAndOnes(table.testCase)
 		if !ErrorContains(err, table.expectedErr) {
 			t.Errorf("Test Case (%s) was incorrect, got unexpected error: (%v), expected: (%s).", table.testCase, err, table.expectedErr)
 		} else if !testEq(zeros, table.expectedZeros) {
