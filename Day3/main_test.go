@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
-// ErrorContains checks if the error message in out contains the text in
-// want.
+// ErrorContains checks if the error message in actual contains the text in
+// expected.
 //
-// This is safe when out is nil. Use an empty string for want if you want to
+// This is safe when actual is nil. Use an empty string for expected if you want to
 // test that err is nil.
 func ErrorContains(actual error, expected string) bool {
 	if actual == nil {
