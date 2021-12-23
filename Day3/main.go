@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -11,7 +12,7 @@ import (
 func main() {
 	binarynumbers := readInput("inputfile.txt")
 
-	numzeros, numones := zerosAndOnes(binarynumbers)
+	numzeros, numones, _ := zerosAndOnes(binarynumbers)
 	fmt.Println("Num Zeros:", numzeros)
 	fmt.Println("Num Ones: ", numones)
 
@@ -50,23 +51,33 @@ func readInput(inputfile string) []string {
 }
 
 // Calculate number of zeros and ones in each position
-func zerosAndOnes(slice []string) (numzeros []int, numones []int) {
-	numzeros = make([]int, len(slice[0]))
-	numones = make([]int, len(slice[0]))
+func zerosAndOnes(slice []string) (numzeros []int, numones []int, string error) {
+	if len(slice) == 0 {
+		return nil, nil, errors.New("Error: empty slice passed to zerosAndOnes")
+	}
+
+	lenfirstdigit := len(slice[0])
+	numzeros = make([]int, lenfirstdigit)
+	numones = make([]int, lenfirstdigit)
 
 	for _, numstr := range slice {
+		if len(numstr) != lenfirstdigit {
+			return nil, nil, errors.New("Error: slice with varying length digits passed to zerosAndOnes")
+		}
 		for i, digit := range numstr {
 			// convert ascii to num
-			digit -= 48
+			digit -= '0'
 			if digit == 0 {
 				numzeros[i] += 1
-			} else {
+			} else if digit == 1 {
 				numones[i] += 1
+			} else {
+				return nil, nil, errors.New("Error: digit that is not a zero or one pass to zerosAndOnes")
 			}
 		}
 	}
 
-	return numzeros, numones
+	return numzeros, numones, nil
 }
 
 // Calculate Gamma and Epsilon, which are opposing values
