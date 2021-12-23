@@ -16,7 +16,7 @@ func main() {
 	fmt.Println("Num Zeros:", numZeros)
 	fmt.Println("Num Ones: ", numOnes)
 
-	gamma, epsilon := CalcGammaAndEpsilon(numZeros, numOnes)
+	gamma, epsilon, _ := CalcGammaAndEpsilon(numZeros, numOnes)
 	fmt.Println("Gamma:    ", gamma)
 	fmt.Println("Epsilon:  ", epsilon)
 
@@ -51,7 +51,7 @@ func ReadInput(inputfile string) []string {
 }
 
 // Calculate number of zeros and ones in each position
-func ZerosAndOnes(slice []string) (numZeros []int, numOnes []int, string error) {
+func ZerosAndOnes(slice []string) (numZeros []int, numOnes []int, err error) {
 	if len(slice) == 0 {
 		return nil, nil, errors.New("Error: empty slice passed to ZerosAndOnes")
 	}
@@ -62,7 +62,7 @@ func ZerosAndOnes(slice []string) (numZeros []int, numOnes []int, string error) 
 
 	for _, numstr := range slice {
 		if len(numstr) != lenFirstDigit {
-			return nil, nil, errors.New("Error: slice with varying length digits passed to ZerosAndOnes")
+			return nil, nil, errors.New("Error: slice with varying length values passed to ZerosAndOnes")
 		}
 		for i, digit := range numstr {
 			// convert ascii to num
@@ -81,17 +81,23 @@ func ZerosAndOnes(slice []string) (numZeros []int, numOnes []int, string error) 
 }
 
 // Calculate Gamma and Epsilon, which are opposing values
-func CalcGammaAndEpsilon(numZeros []int, numOnes []int) (gamma []int, epsilon []int) {
+func CalcGammaAndEpsilon(numZeros []int, numOnes []int) (gamma []int, epsilon []int, err error) {
+	if len(numZeros) == 0 || len(numOnes) == 0 {
+		return nil, nil, errors.New("Error: empty slice passed to CalcGammaAndEpsilon")
+	}
+
 	gamma = make([]int, len(numZeros))
 	epsilon = make([]int, len(numZeros))
 	for i := range numZeros {
-		if numZeros[i] > numOnes[i] {
+		if numZeros[i] == numOnes[i] {
+			return nil, nil, errors.New("Error: equal amount of ones and zeros passed to CalcGammaAndEpsilon")
+		} else if numZeros[i] > numOnes[i] {
 			gamma[i], epsilon[i] = 0, 1
 		} else {
 			gamma[i], epsilon[i] = 1, 0
 		}
 	}
-	return gamma, epsilon
+	return gamma, epsilon, nil
 }
 
 // turn slices of bits into decimal(base10) value

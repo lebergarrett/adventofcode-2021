@@ -20,8 +20,8 @@ func ErrorContains(actual error, expected string) bool {
 	return strings.Contains(actual.Error(), expected)
 }
 
-// Test if two slices are the same
-func TestEq(a, b []int) bool {
+// Evaluate if two slices are the same
+func SliceIsEqual(a, b []int) bool {
 	if len(a) != len(b) {
 		return false
 	}
@@ -42,15 +42,12 @@ func TestZerosAndOnes(t *testing.T) {
 	}{
 		{[]string{"0", "0", "0", "0"}, []int{4}, []int{0}, ""},
 		{[]string{"1", "0", "0", "0"}, []int{3}, []int{1}, ""},
-		{[]string{"0", "0", "0", "1"}, []int{3}, []int{1}, ""},
-		{[]string{"0", "1", "1", "0"}, []int{2}, []int{2}, ""},
-		{[]string{"1", "0", "1", "0"}, []int{2}, []int{2}, ""},
 		{[]string{"1", "0", "1", "0", "1", "1", "1", "1"}, []int{2}, []int{6}, ""},
 		{[]string{"10", "00", "10", "01", "11", "11", "01", "10"}, []int{3, 4}, []int{5, 4}, ""},
 		{[]string{"10", "001", "10", "01"}, nil, nil, "Error: slice with varying length digits passed to ZerosAndOnes"},
 		{[]string{}, nil, nil, "Error: empty slice passed to ZerosAndOnes"},
 		{[]string{"string"}, nil, nil, "Error: digit that is not a zero or one pass to ZerosAndOnes"},
-		{[]string{"0", "string"}, nil, nil, "Error: slice with varying length digits passed to ZerosAndOnes"},
+		{[]string{"0", "string"}, nil, nil, "Error: slice with varying length values passed to ZerosAndOnes"},
 		{[]string{"0", "s"}, nil, nil, "Error: digit that is not a zero or one pass to ZerosAndOnes"},
 	}
 
@@ -58,10 +55,39 @@ func TestZerosAndOnes(t *testing.T) {
 		zeros, ones, err := ZerosAndOnes(table.testCase)
 		if !ErrorContains(err, table.expectedErr) {
 			t.Errorf("Test Case (%s) was incorrect, got unexpected error: (%v), expected: (%s).", table.testCase, err, table.expectedErr)
-		} else if !TestEq(zeros, table.expectedZeros) {
+		} else if !SliceIsEqual(zeros, table.expectedZeros) {
 			t.Errorf("Test Case (%s) was incorrect, got unexpected zeros: (%d), expected: (%d).", table.testCase, zeros, table.expectedZeros)
-		} else if !TestEq(ones, table.expectedOnes) {
+		} else if !SliceIsEqual(ones, table.expectedOnes) {
 			t.Errorf("Test Case (%s) was incorrect, got unexpected ones: (%d), expected: (%d).", table.testCase, ones, table.expectedOnes)
+		}
+	}
+}
+
+func TestCalcGammaAndEpsilon(t *testing.T) {
+	tables := []struct {
+		testCaseZeros   []int
+		testCaseOnes    []int
+		expectedGamma   []int
+		expectedEpsilon []int
+		expectedErr     string
+	}{
+		{[]int{1}, []int{0}, []int{0}, []int{1}, ""},
+		{[]int{0}, []int{1}, []int{1}, []int{0}, ""},
+		{[]int{2, 4, 6, 8}, []int{1, 5, 3, 9}, []int{0, 1, 0, 1}, []int{1, 0, 1, 0}, ""},
+		{[]int{0}, []int{0}, nil, nil, "Error: equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
+		{[]int{100}, []int{100}, nil, nil, "Error: equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
+		{[]int{5, 30}, []int{10, 30}, nil, nil, "Error: equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
+		{[]int{}, []int{}, nil, nil, "Error: empty slice passed to CalcGammaAndEpsilon"},
+	}
+
+	for _, table := range tables {
+		gamma, epsilon, err := CalcGammaAndEpsilon(table.testCaseZeros, table.testCaseOnes)
+		if !ErrorContains(err, table.expectedErr) {
+			t.Errorf("Test Case (%v)(%v) was incorrect, got unexpected error: (%v), expected: (%s).", table.testCaseZeros, table.testCaseOnes, err, table.expectedErr)
+		} else if !SliceIsEqual(gamma, table.expectedGamma) {
+			t.Errorf("Test Case (%v)(%v) was incorrect, got unexpected zeros: (%v), expected: (%v).", table.testCaseZeros, table.testCaseOnes, gamma, table.expectedGamma)
+		} else if !SliceIsEqual(epsilon, table.expectedEpsilon) {
+			t.Errorf("Test Case (%v)(%v) was incorrect, got unexpected ones: (%v), expected: (%v).", table.testCaseZeros, table.testCaseOnes, epsilon, table.expectedEpsilon)
 		}
 	}
 }
