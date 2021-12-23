@@ -44,12 +44,12 @@ func TestZerosAndOnes(t *testing.T) {
 		{[]string{"1", "0", "0", "0"}, []int{3}, []int{1}, ""},
 		{[]string{"1", "0", "1", "0", "1", "1", "1", "1"}, []int{2}, []int{6}, ""},
 		{[]string{"10", "00", "10", "01", "11", "11", "01", "10"}, []int{3, 4}, []int{5, 4}, ""},
-		{[]string{"10", "001", "10", "01"}, nil, nil, "Error: slice with varying length values passed to ZerosAndOnes"},
-		{[]string{}, nil, nil, "Error: empty slice passed to ZerosAndOnes"},
-		{[]string{"string"}, nil, nil, "Error: value that is not a zero or one passed to ZerosAndOnes"},
-		{[]string{"0", "string"}, nil, nil, "Error: slice with varying length values passed to ZerosAndOnes"},
-		{[]string{"0", "s"}, nil, nil, "Error: value that is not a zero or one passed to ZerosAndOnes"},
-		{[]string{"-1", "0"}, nil, nil, "Error: value that is not a zero or one passed to ZerosAndOnes"},
+		{[]string{"10", "001", "10", "01"}, nil, nil, "Slice with varying length values passed to ZerosAndOnes"},
+		{[]string{}, nil, nil, "Empty slice passed to ZerosAndOnes"},
+		{[]string{"string"}, nil, nil, "Value that is not a zero or one passed to ZerosAndOnes"},
+		{[]string{"0", "string"}, nil, nil, "Slice with varying length values passed to ZerosAndOnes"},
+		{[]string{"0", "s"}, nil, nil, "Value that is not a zero or one passed to ZerosAndOnes"},
+		{[]string{"-1", "0"}, nil, nil, "Value that is not a zero or one passed to ZerosAndOnes"},
 	}
 
 	for _, table := range tables {
@@ -75,11 +75,11 @@ func TestCalcGammaAndEpsilon(t *testing.T) {
 		{[]int{1}, []int{0}, []int{0}, []int{1}, ""},
 		{[]int{0}, []int{1}, []int{1}, []int{0}, ""},
 		{[]int{2, 4, 6, 8}, []int{1, 5, 3, 9}, []int{0, 1, 0, 1}, []int{1, 0, 1, 0}, ""},
-		{[]int{0}, []int{0}, nil, nil, "Error: equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
-		{[]int{100}, []int{100}, nil, nil, "Error: equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
-		{[]int{5, 30}, []int{10, 30}, nil, nil, "Error: equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
-		{[]int{}, []int{}, nil, nil, "Error: empty slice passed to CalcGammaAndEpsilon"},
-		{[]int{-1}, []int{1}, nil, nil, "Error: negative value passed to CalcGammaAndEpsilon"},
+		{[]int{0}, []int{0}, nil, nil, "Equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
+		{[]int{100}, []int{100}, nil, nil, "Equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
+		{[]int{5, 30}, []int{10, 30}, nil, nil, "Equal amount of ones and zeros passed to CalcGammaAndEpsilon"},
+		{[]int{}, []int{}, nil, nil, "Empty slice passed to CalcGammaAndEpsilon"},
+		{[]int{-1}, []int{1}, nil, nil, "Negative value passed to CalcGammaAndEpsilon"},
 	}
 
 	for _, table := range tables {
@@ -104,8 +104,8 @@ func TestConvertToBase10(t *testing.T) {
 		{[]int{0, 1}, 1, ""},
 		{[]int{1, 0, 0, 0}, 8, ""},
 		{[]int{1, 1, 0, 1, 0, 1, 1, 0}, 214, ""},
-		{[]int{}, 0, "Error: empty slice passed to ConvertToBase10"},
-		{[]int{2}, 0, "Error: non-binary value passed to ConvertToBase10"},
+		{[]int{}, 0, "Empty slice passed to ConvertToBase10"},
+		{[]int{2}, 0, "Non-binary value passed to ConvertToBase10"},
 	}
 
 	for _, table := range tables {
