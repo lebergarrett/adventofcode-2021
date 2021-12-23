@@ -13,33 +13,21 @@ func main() {
 	binaryNumbers := ReadInput("inputfile.txt")
 
 	numZeros, numOnes, err := ZerosAndOnes(binaryNumbers)
-	if err != nil {
-		fmt.Println("Error: ", err)
-		os.Exit(1)
-	}
+	ErrorCheck(err)
 	fmt.Println("Num Zeros:", numZeros)
 	fmt.Println("Num Ones: ", numOnes)
 
 	gamma, epsilon, err := CalcGammaAndEpsilon(numZeros, numOnes)
-	if err != nil {
-		fmt.Println("Error: ", err)
-		os.Exit(1)
-	}
+	ErrorCheck(err)
 	fmt.Println("Gamma:    ", gamma)
 	fmt.Println("Epsilon:  ", epsilon)
 
 	decGamma, err := ConvertToBase10(gamma)
-	if err != nil {
-		fmt.Println("Error: ", err)
-		os.Exit(1)
-	}
+	ErrorCheck(err)
 	fmt.Println("decGamma: ", decGamma)
 
 	decEpsilon, err := ConvertToBase10(epsilon)
-	if err != nil {
-		fmt.Println("Error: ", err)
-		os.Exit(1)
-	}
+	ErrorCheck(err)
 	fmt.Println("decEpsilon: ", decEpsilon)
 
 	// Calculate and trim trailing zeros for power consumption output
@@ -47,13 +35,17 @@ func main() {
 	fmt.Println("What is the power consumption of the submarine?", strconv.FormatFloat(powerConsumption, 'f', -1, 64))
 }
 
-// Opening the inputfile and transposing it to a slice
-func ReadInput(inputfile string) []string {
-	file, err := os.Open(inputfile)
+func ErrorCheck(err error) {
 	if err != nil {
 		fmt.Println("Error: ", err)
 		os.Exit(1)
 	}
+}
+
+// Opening the inputfile and transposing it to a slice
+func ReadInput(inputfile string) []string {
+	file, err := os.Open(inputfile)
+	ErrorCheck(err)
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
