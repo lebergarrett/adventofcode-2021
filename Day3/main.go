@@ -20,9 +20,9 @@ func main() {
 	fmt.Println("Gamma:    ", gamma)
 	fmt.Println("Epsilon:  ", epsilon)
 
-	decGamma := ConvertToBase10(gamma)
+	decGamma, _ := ConvertToBase10(gamma)
 	fmt.Println("decGamma: ", decGamma)
-	decEpsilon := ConvertToBase10(epsilon)
+	decEpsilon, _ := ConvertToBase10(epsilon)
 	fmt.Println("decEpsilon: ", decEpsilon)
 
 	// Calculate and trim trailing zeros for power consumption output
@@ -72,7 +72,7 @@ func ZerosAndOnes(slice []string) (numZeros []int, numOnes []int, err error) {
 			} else if digit == 1 {
 				numOnes[i] += 1
 			} else {
-				return nil, nil, errors.New("Error: digit that is not a zero or one pass to ZerosAndOnes")
+				return nil, nil, errors.New("Error: value that is not a zero or one passed to ZerosAndOnes")
 			}
 		}
 	}
@@ -91,7 +91,11 @@ func CalcGammaAndEpsilon(numZeros []int, numOnes []int) (gamma []int, epsilon []
 	for i := range numZeros {
 		if numZeros[i] == numOnes[i] {
 			return nil, nil, errors.New("Error: equal amount of ones and zeros passed to CalcGammaAndEpsilon")
-		} else if numZeros[i] > numOnes[i] {
+		} else if numZeros[i] < 0 || numOnes[i] < 0 {
+			return nil, nil, errors.New("Error: negative value passed to CalcGammaAndEpsilon")
+		}
+
+		if numZeros[i] > numOnes[i] {
 			gamma[i], epsilon[i] = 0, 1
 		} else {
 			gamma[i], epsilon[i] = 1, 0
@@ -101,10 +105,17 @@ func CalcGammaAndEpsilon(numZeros []int, numOnes []int) (gamma []int, epsilon []
 }
 
 // turn slices of bits into decimal(base10) value
-func ConvertToBase10(slice []int) (dec float64) {
+func ConvertToBase10(slice []int) (dec float64, err error) {
+	if len(slice) == 0 {
+		return 0, errors.New("Error: empty slice passed to ConvertToBase10")
+	}
+
 	// creates 2 iterators, one that counts down and one that counts up
 	for i, j := len(slice)-1, 0; i >= 0; i, j = i-1, j+1 {
+		if slice[i] != 0 && slice[i] != 1 {
+			return 0, errors.New("Error: non-binary value passed to ConvertToBase10")
+		}
 		dec += float64(slice[i]) * math.Pow(2, float64(j))
 	}
-	return dec
+	return dec, nil
 }
