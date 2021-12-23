@@ -8,53 +8,49 @@ import (
 )
 
 func main() {
-	measurements := readInput("input.txt")
+	strMeasurements := ReadInput("input.txt")
+	intMeasurements, err := MakeInts(strMeasurements)
+	ErrorCheck(err)
 
-	// vars that need to persist outside of loop
-	inputlen := len(measurements) - 1
-	var pt1counter int // counter for part 1
-	var pt2counter int // counter for part 2
-	var lastwindow int
+	Part1Answer, err := CalcPart1(intMeasurements)
+	ErrorCheck(err)
+	fmt.Println("How many measurements are larger than the previous measurement?", Part1Answer)
 
-	for i := range measurements {
-		var window int
-		var curr int
-		var next int
-		var nextnext int
+	Part2Answer, err := CalcPart2(intMeasurements)
+	ErrorCheck(err)
+	fmt.Println("How many sums are larger than the previous sum?", Part2Answer)
+}
 
-		if i+1 > inputlen {
-			curr, _ = strconv.Atoi(measurements[i])
-
-			window = curr
-			pt2counter += isLarger(window, lastwindow)
-		} else if i+2 > inputlen {
-			curr, _ = strconv.Atoi(measurements[i])
-			next, _ = strconv.Atoi(measurements[i+1])
-
-			window = curr + next
-			pt1counter += isLarger(next, curr)
-			pt2counter += isLarger(window, lastwindow)
-		} else {
-			curr, _ = strconv.Atoi(measurements[i])
-			next, _ = strconv.Atoi(measurements[i+1])
-			nextnext, _ = strconv.Atoi(measurements[i+2])
-
-			window = curr + next + nextnext
-			pt1counter += isLarger(next, curr)
-
-			// if i is zero there is no lastwindow
-			if i != 0 {
-				pt2counter += isLarger(window, lastwindow)
-			}
+func CalcPart1(ints []int) (count int, err error) {
+	for i := 0; i < len(ints)-1; i++ {
+		if ints[i] < ints[i+1] {
+			count++
 		}
-		lastwindow = window
 	}
-	fmt.Println("How many measurements are larger than the previous measurement?", pt1counter)
-	fmt.Println("How many sums are larger than the previous sum?", pt2counter)
+	return count, nil
+}
+
+func CalcPart2(ints []int) (count int, err error) {
+	for i := 0; i < len(ints)-3; i++ {
+		window1 := ints[i] + ints[i+1] + ints[i+2]
+		window2 := ints[i+1] + ints[i+2] + ints[i+3]
+
+		if window1 < window2 {
+			count++
+		}
+	}
+	return count, nil
+}
+
+func ErrorCheck(err error) {
+	if err != nil {
+		fmt.Println("Error: ", err)
+		os.Exit(1)
+	}
 }
 
 // opening the inputfile and transposing it to a slice
-func readInput(inputfile string) []string {
+func ReadInput(inputfile string) []string {
 	file, err := os.Open(inputfile)
 	if err != nil {
 		fmt.Println("Error: ", err)
@@ -73,10 +69,11 @@ func readInput(inputfile string) []string {
 	return output
 }
 
-// determine if first int is larger than second
-func isLarger(first int, second int) int {
-	if first > second {
-		return 1
+// turn a slice of strings into ints
+func MakeInts(strSlice []string) (intSlice []int, err error) {
+	intSlice = make([]int, len(strSlice))
+	for i, str := range strSlice {
+		intSlice[i], err = strconv.Atoi(str)
 	}
-	return 0
+	return intSlice, err
 }
