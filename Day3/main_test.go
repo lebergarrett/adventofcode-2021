@@ -21,7 +21,7 @@ func ErrorContains(actual error, expected string) bool {
 }
 
 // Test if two slices are the same
-func testEq(a, b []int) bool {
+func TestEq(a, b []int) bool {
 	if len(a) != len(b) {
 		return false
 	}
@@ -58,9 +58,9 @@ func TestZerosAndOnes(t *testing.T) {
 		zeros, ones, err := ZerosAndOnes(table.testCase)
 		if !ErrorContains(err, table.expectedErr) {
 			t.Errorf("Test Case (%s) was incorrect, got unexpected error: (%v), expected: (%s).", table.testCase, err, table.expectedErr)
-		} else if !testEq(zeros, table.expectedZeros) {
+		} else if !TestEq(zeros, table.expectedZeros) {
 			t.Errorf("Test Case (%s) was incorrect, got unexpected zeros: (%d), expected: (%d).", table.testCase, zeros, table.expectedZeros)
-		} else if !testEq(ones, table.expectedOnes) {
+		} else if !TestEq(ones, table.expectedOnes) {
 			t.Errorf("Test Case (%s) was incorrect, got unexpected ones: (%d), expected: (%d).", table.testCase, ones, table.expectedOnes)
 		}
 	}
