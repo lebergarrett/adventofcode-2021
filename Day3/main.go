@@ -7,7 +7,6 @@ import (
 	"math"
 	"os"
 	"strconv"
-	"unicode/utf8"
 )
 
 func main() {
@@ -197,11 +196,6 @@ func ConvertToBase10(slice []int) (dec float64, err error) {
 		dec += float64(slice[i]) * math.Pow(2, float64(j))
 	}
 	return dec, nil
-}
-
-func trimFirstRune(s string) string {
-	_, i := utf8.DecodeRuneInString(s)
-	return s[i:]
 }
 
 func ErrorCheck(err error) {
