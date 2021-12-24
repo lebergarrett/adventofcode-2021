@@ -5,64 +5,48 @@ import (
 	"testing"
 )
 
-// ErrorContains checks if the error message in actual contains the text in
-// expected.
-//
-// This is safe when actual is nil. Use an empty string for expected if you want to
-// test that err is nil.
-func ErrorContains(actual error, expected string) bool {
-	if actual == nil {
-		return expected == ""
+func TestExtractDigit(t *testing.T) {
+	tables := []struct {
+		testSlice   []string
+		testDigit   int
+		expectedStr string
+	}{
+		{[]string{"10", "10", "11", "01"}, 0, "1110"},
+		{[]string{"00", "00", "00", "00"}, 0, "0000"},
+		{[]string{"100", "101", "111", "010"}, 2, "0110"},
 	}
-	if expected == "" {
-		return false
-	}
-	return strings.Contains(actual.Error(), expected)
-}
 
-// Evaluate if two slices are the same
-func SliceIsEqual(a, b []int) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if a[i] != b[i] {
-			return false
+	for _, table := range tables {
+		str := ExtractDigit(table.testSlice, table.testDigit)
+		if str != table.expectedStr {
+			t.Errorf("Test Case (%v)(%d) was incorrect, got unexpected decimal: (%v), expected: (%v).", table.testSlice, table.testDigit, str, table.expectedStr)
 		}
 	}
-	return true
 }
 
-// func TestZerosAndOnes(t *testing.T) {
-// 	tables := []struct {
-// 		testCase      []string
-// 		expectedZeros []int
-// 		expectedOnes  []int
-// 		expectedErr   string
-// 	}{
-// 		{[]string{"0", "0", "0", "0"}, []int{4}, []int{0}, ""},
-// 		{[]string{"1", "0", "0", "0"}, []int{3}, []int{1}, ""},
-// 		{[]string{"1", "0", "1", "0", "1", "1", "1", "1"}, []int{2}, []int{6}, ""},
-// 		{[]string{"10", "00", "10", "01", "11", "11", "01", "10"}, []int{3, 4}, []int{5, 4}, ""},
-// 		{[]string{"10", "001", "10", "01"}, nil, nil, "Slice with varying length values passed to ZerosAndOnes"},
-// 		{[]string{}, nil, nil, "Empty slice passed to ZerosAndOnes"},
-// 		{[]string{"string"}, nil, nil, "Value that is not a zero or one passed to ZerosAndOnes"},
-// 		{[]string{"0", "string"}, nil, nil, "Slice with varying length values passed to ZerosAndOnes"},
-// 		{[]string{"0", "s"}, nil, nil, "Value that is not a zero or one passed to ZerosAndOnes"},
-// 		{[]string{"-1", "0"}, nil, nil, "Value that is not a zero or one passed to ZerosAndOnes"},
-// 	}
+func TestZerosAndOnes(t *testing.T) {
+	tables := []struct {
+		testCase      string
+		expectedZeros int
+		expectedOnes  int
+		expectedErr   string
+	}{
+		{"0", 1, 0, ""},
+		{"1", 0, 1, ""},
+		{"10101111", 2, 6, ""},
+	}
 
-// 	for _, table := range tables {
-// 		zeros, ones, err := ZerosAndOnes(table.testCase)
-// 		if !ErrorContains(err, table.expectedErr) {
-// 			t.Errorf("Test Case (%s) was incorrect, got unexpected error: (%v), expected: (%s).", table.testCase, err, table.expectedErr)
-// 		} else if !SliceIsEqual(zeros, table.expectedZeros) {
-// 			t.Errorf("Test Case (%s) was incorrect, got unexpected zeros: (%d), expected: (%d).", table.testCase, zeros, table.expectedZeros)
-// 		} else if !SliceIsEqual(ones, table.expectedOnes) {
-// 			t.Errorf("Test Case (%s) was incorrect, got unexpected ones: (%d), expected: (%d).", table.testCase, ones, table.expectedOnes)
-// 		}
-// 	}
-// }
+	for _, table := range tables {
+		zeros, ones, err := ZerosAndOnes(table.testCase)
+		if !ErrorContains(err, table.expectedErr) {
+			t.Errorf("Test Case (%s) was incorrect, got unexpected error: (%v), expected: (%s).", table.testCase, err, table.expectedErr)
+		} else if zeros != table.expectedZeros {
+			t.Errorf("Test Case (%s) was incorrect, got unexpected zeros: (%d), expected: (%d).", table.testCase, zeros, table.expectedZeros)
+		} else if ones != table.expectedOnes {
+			t.Errorf("Test Case (%s) was incorrect, got unexpected ones: (%d), expected: (%d).", table.testCase, ones, table.expectedOnes)
+		}
+	}
+}
 
 func TestCalcGammaAndEpsilon(t *testing.T) {
 	tables := []struct {
@@ -116,4 +100,32 @@ func TestConvertToBase10(t *testing.T) {
 			t.Errorf("Test Case (%v) was incorrect, got unexpected decimal: (%v), expected: (%v).", table.testCase, dec, table.expectedDec)
 		}
 	}
+}
+
+// ErrorContains checks if the error message in actual contains the text in
+// expected.
+//
+// This is safe when actual is nil. Use an empty string for expected if you want to
+// test that err is nil.
+func ErrorContains(actual error, expected string) bool {
+	if actual == nil {
+		return expected == ""
+	}
+	if expected == "" {
+		return false
+	}
+	return strings.Contains(actual.Error(), expected)
+}
+
+// Evaluate if two slices are the same
+func SliceIsEqual(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }

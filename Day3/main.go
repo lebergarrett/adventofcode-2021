@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 	"strconv"
+	"unicode/utf8"
 )
 
 func main() {
@@ -21,17 +22,15 @@ func CalcPart1(binaryNumbers []string) (output float64, err error) {
 	totalNumZeros := make([]int, len(binaryNumbers[0]))
 	totalNumOnes := make([]int, len(binaryNumbers[0]))
 
-	// iterate over every binary number (line in the file)
-	for _, numstr := range binaryNumbers {
-		numZeros, numOnes, err := ZerosAndOnes(numstr)
+	// iterate over the length of the numbers (12)
+	for i := 0; i < len(binaryNumbers[0]); i++ {
+		// extract all digits at this place (i.e. all first digits, all second digits)
+		strDigits := ExtractDigit(binaryNumbers, i)
+		numZeros, numOnes, err := ZerosAndOnes(strDigits)
 		ErrorCheck(err)
 
-		// need to transpose values into other slices by adding to existing value in slot
-		// numstr just used because it's the same len as numZeros and numOnes
-		for i := range numstr {
-			totalNumZeros[i] += numZeros[i]
-			totalNumOnes[i] += numOnes[i]
-		}
+		totalNumZeros[i] = numZeros
+		totalNumOnes[i] = numOnes
 	}
 
 	gamma, epsilon, err := CalcGammaAndEpsilon(totalNumZeros, totalNumOnes)
@@ -54,19 +53,27 @@ func CalcPart1(binaryNumbers []string) (output float64, err error) {
 // 	fmt.Println(numZeros, numOnes)
 // }
 
-func ZerosAndOnes(binarystr string) (numZeros []int, numOnes []int, err error) {
-	numZeros = make([]int, len(binarystr))
-	numOnes = make([]int, len(binarystr))
+func ExtractDigit(slice []string, digit int) (str string) {
+	for _, value := range slice {
+		if digit == len(value) {
+			str += value[digit-1:]
+		} else {
+			str += value[digit : digit+1]
+		}
+	}
+	return str
+}
 
-	for i, digit := range binarystr {
+func ZerosAndOnes(binarystr string) (numZeros int, numOnes int, err error) {
+	for _, digit := range binarystr {
 		// convert ascii to num
 		digit -= '0'
 		if digit == 0 {
-			numZeros[i] += 1
+			numZeros += 1
 		} else if digit == 1 {
-			numOnes[i] += 1
+			numOnes += 1
 		} else {
-			return nil, nil, errors.New("Value that is not a zero or one passed to ZerosAndOnes")
+			return 0, 0, errors.New("Value that is not a zero or one passed to ZerosAndOnes")
 		}
 	}
 	return numZeros, numOnes, nil
@@ -110,6 +117,11 @@ func ConvertToBase10(slice []int) (dec float64, err error) {
 		dec += float64(slice[i]) * math.Pow(2, float64(j))
 	}
 	return dec, nil
+}
+
+func trimFirstRune(s string) string {
+	_, i := utf8.DecodeRuneInString(s)
+	return s[i:]
 }
 
 func ErrorCheck(err error) {
