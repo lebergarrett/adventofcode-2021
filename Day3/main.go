@@ -16,6 +16,10 @@ func main() {
 	powerConsumption, err := CalcPart1(binaryNumbers)
 	ErrorCheck(err)
 	fmt.Println("What is the power consumption of the submarine?", strconv.FormatFloat(powerConsumption, 'f', -1, 64))
+
+	lifeSupportRating, err := CalcPart2(binaryNumbers)
+	ErrorCheck(err)
+	fmt.Println("What is the life support rating of the submarine?", strconv.FormatFloat(lifeSupportRating, 'f', -1, 64))
 }
 
 func CalcPart1(binaryNumbers []string) (output float64, err error) {
@@ -46,12 +50,88 @@ func CalcPart1(binaryNumbers []string) (output float64, err error) {
 	return powerConsumption, err
 }
 
-// func CalcPart2(binaryNumbers []string) float64 {
-// 	numZeros, numOnes , err := ZerosAndOnes(binaryNumbers)
-// 	ErrorCheck(err)
+func CalcPart2(binaryNumbers []string) (output float64, err error) {
+	oxygenRating, err := CalcOxygenGenRating(binaryNumbers, 0)
+	ErrorCheck(err)
 
-// 	fmt.Println(numZeros, numOnes)
-// }
+	co2ScrubberRating, err := CalcCO2ScrubberRating(binaryNumbers, 0)
+	ErrorCheck(err)
+
+	return oxygenRating * co2ScrubberRating, err
+}
+
+func CalcOxygenGenRating(binaryNumbers []string, i int) (rating float64, err error) {
+	// establish base case, when only one num is left in slice
+	if len(binaryNumbers) == 1 {
+		// if base case is hit, convert the string to float
+		var sliceOxygenRating []int
+		for _, digit := range binaryNumbers[0] {
+			// convert ascii to num
+			digit -= '0'
+			sliceOxygenRating = append(sliceOxygenRating, int(digit))
+		}
+		decOxygenRating, _ := ConvertToBase10(sliceOxygenRating)
+		return decOxygenRating, nil
+	}
+	// pull the values at the location and tally up zeros and ones
+	strDigits := ExtractDigit(binaryNumbers, i)
+	numZeros, numOnes, err := ZerosAndOnes(strDigits)
+	ErrorCheck(err)
+
+	// remove nums which have the lesser between zeros and ones
+	if numZeros > numOnes {
+		binaryNumbers = RemoveNumsContaining(binaryNumbers, i, "1")
+	} else {
+		binaryNumbers = RemoveNumsContaining(binaryNumbers, i, "0")
+	}
+
+	// woooo, recursion
+	return CalcOxygenGenRating(binaryNumbers, i+1)
+}
+
+func CalcCO2ScrubberRating(binaryNumbers []string, i int) (rating float64, err error) {
+	// establish base case, when only one num is left in slice
+	if len(binaryNumbers) == 1 {
+		// if base case is hit, convert the string to float
+		var sliceCO2ScrubberRating []int
+		for _, digit := range binaryNumbers[0] {
+			// convert ascii to num
+			digit -= '0'
+			sliceCO2ScrubberRating = append(sliceCO2ScrubberRating, int(digit))
+		}
+		decCO2ScrubberRating, _ := ConvertToBase10(sliceCO2ScrubberRating)
+		return decCO2ScrubberRating, nil
+	}
+	// pull the values at the location and tally up zeros and ones
+	strDigits := ExtractDigit(binaryNumbers, i)
+	numZeros, numOnes, err := ZerosAndOnes(strDigits)
+	ErrorCheck(err)
+
+	// remove nums which have the lesser between zeros and ones
+	if numZeros > numOnes {
+		binaryNumbers = RemoveNumsContaining(binaryNumbers, i, "0")
+	} else {
+		binaryNumbers = RemoveNumsContaining(binaryNumbers, i, "1")
+	}
+
+	// woooo, recursion
+	return CalcCO2ScrubberRating(binaryNumbers, i+1)
+}
+
+func RemoveNumsContaining(slice []string, digit int, numStr string) (newSlice []string) {
+	for _, value := range slice {
+		if digit == len(value) {
+			if value[digit-1:] == numStr {
+				newSlice = append(newSlice, value)
+			}
+		} else {
+			if value[digit:digit+1] == numStr {
+				newSlice = append(newSlice, value)
+			}
+		}
+	}
+	return newSlice
+}
 
 func ExtractDigit(slice []string, digit int) (str string) {
 	for _, value := range slice {
