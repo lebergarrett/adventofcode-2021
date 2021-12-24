@@ -5,6 +5,25 @@ import (
 	"testing"
 )
 
+func TestCalcPart1(t *testing.T) {
+	tables := []struct {
+		testCase      []string
+		expectedFloat float64
+		expectedErr   string
+	}{
+		{[]string{"00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"}, 198, ""},
+	}
+
+	for _, table := range tables {
+		float, err := CalcPart1(table.testCase)
+		if !ErrorContains(err, table.expectedErr) {
+			t.Errorf("Test Case (%s) was incorrect, got unexpected error: (%v), expected: (%s).", table.testCase, err, table.expectedErr)
+		} else if float != table.expectedFloat {
+			t.Errorf("Test Case (%s) was incorrect, got unexpected power consumption: (%f), expected: (%f).", table.testCase, float, table.expectedFloat)
+		}
+	}
+}
+
 func TestExtractDigit(t *testing.T) {
 	tables := []struct {
 		testSlice   []string
